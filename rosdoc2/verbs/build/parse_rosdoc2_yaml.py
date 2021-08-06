@@ -80,6 +80,9 @@ def parse_rosdoc2_yaml(yaml_string, build_context):
     if 'run_doxygen' in settings_dict:
         build_context.add_run_doxygen(run_doxygen=settings_dict['run_doxygen'])
 
+    if 'run_sphinx_apidoc' in settings_dict:
+        build_context.add_run_sphinx_apidoc(run_sphinx_apidoc=settings_dict['run_sphinx_apidoc'])
+
     if 'builders' not in config:
         raise ValueError(
             f"Error parsing file '{file_name}', in the second section, "
