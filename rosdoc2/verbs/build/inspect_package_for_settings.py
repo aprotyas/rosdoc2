@@ -61,6 +61,12 @@ settings:
     ## - 'mixed': Both the 'sphinx-apidoc' and the 'doxygen'/'breathe'/'exhale' tools
     ##   are run, this build type requires a separate 'python_source' setting.
     build_type: {package_build_type}
+
+    ## This setting is relevant mostly if the 'build_type' is mixed, and the standard
+    ## Python package layout cannot be assumed for 'sphinx-apidoc' invocation. The user
+    ## can provide the path (relative to the 'package.xml' file) where the Python modules
+    ## defined by this package are located.
+    python_source: {package_name}
 builders:
     ## Each stanza represents a separate build step, performed by a specific 'builder'.
     ## The key of each stanza is the builder to use; this must be one of the

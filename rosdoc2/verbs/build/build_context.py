@@ -27,3 +27,6 @@ class BuildContext:
 
     def add_build_type(self, *, build_type):
         self.build_type = build_type
+
+    def add_python_source(self, *, python_source):
+        self.python_source = python_source

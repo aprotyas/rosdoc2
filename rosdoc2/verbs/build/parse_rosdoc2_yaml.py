@@ -74,6 +74,9 @@ def parse_rosdoc2_yaml(yaml_string, build_context):
             f"got '{build_type}' instead")
     build_context.add_build_type(build_type=build_type)
 
+    if 'python_source' in settings_dict:
+        build_context.add_python_source(python_source=settings_dict['python_source'])
+
     if 'builders' not in config:
         raise ValueError(
             f"Error parsing file '{file_name}', in the second section, "
