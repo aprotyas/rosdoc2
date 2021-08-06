@@ -15,6 +15,7 @@
 import json
 import logging
 import os
+import setuptools
 import shutil
 import subprocess
 
@@ -371,6 +372,41 @@ class SphinxBuilder(Builder):
             doc_build_folder,
             sourcedir,
             intersphinx_mapping_extensions)
+
+        # If the package has build type `ament_python`/`mixed`, then
+        # invoke `sphinx-apidoc` before building
+        if self.build_context.build_type in ['ament_python', 'mixed']:
+            package_xml_directory = os.path.dirname(self.build_context.package.filename)
+            package_list = setuptools.find_packages(where=package_xml_directory)
+            if package_list is not None:
+                package_src_directory = os.path.join(package_xml_directory, package_list[0])
+            elif self.build_context.python_source is not None:
+                package_src_directory = \
+                    os.path.join(
+                        package_xml_directory,
+                        self.build_context.python_source)
+            else:
+                msg = \
+                'Could not locate source directory to invoke sphinx-apidoc in. ' \
+                'If this is a `mixed` build_type, please specify the Python source ' \
+                'in `rosdoc2.yaml`.'
+                raise RuntimeError(msg)
+            cmd = [
+                'sphinx-apidoc',
+                '-o', os.path.relpath(sourcedir, start=doc_build_folder),
+                '-e',  # Document each module in its own page.
+                '-a',  # Append module path into `sys.path`.
+                os.path.abspath(package_src_directory),
+            ]
+            logger.info(
+                f"Running sphinx-apidoc: '{' '.join(cmd)}' in '{doc_build_folder}'"
+            )
+            completed_process = subprocess.run(cmd, cwd=doc_build_folder)
+            msg = f"sphinx-apidoc exited with return code '{completed_process.returncode}'"
+            if completed_process.returncode == 0:
+                logger.info(msg)
+            else:
+                raise RuntimeError(msg)
 
         # Invoke Sphinx-build.
         working_directory = doc_build_folder
