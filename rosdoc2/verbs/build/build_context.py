@@ -30,3 +30,6 @@ class BuildContext:
 
     def add_python_source(self, *, python_source):
         self.python_source = python_source
+
+    def add_run_doxygen(self, *, run_doxygen):
+        self.run_doxygen = run_doxygen

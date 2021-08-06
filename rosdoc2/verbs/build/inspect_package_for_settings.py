@@ -67,6 +67,12 @@ settings:
     ## can provide the path (relative to the 'package.xml' file) where the Python modules
     ## defined by this package are located.
     python_source: {package_name}
+
+    ## This setting, if true, attempts to run `doxygen` and the `breathe`/`exhale`
+    ## extensions to `sphinx` regardless of build type. This is most useful if the
+    ## user would like to generate C/C++ API documentation for a package that is not
+    ## of the `ament_cmake/cmake` build type.
+    run_doxygen: false
 builders:
     ## Each stanza represents a separate build step, performed by a specific 'builder'.
     ## The key of each stanza is the builder to use; this must be one of the
