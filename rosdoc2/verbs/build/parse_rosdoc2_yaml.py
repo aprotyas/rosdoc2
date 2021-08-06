@@ -57,6 +57,23 @@ def parse_rosdoc2_yaml(yaml_string, build_context):
             f"expected a dict{{output_dir: build_settings, ...}}, "
             f"got a '{type(builders_dict)}' instead")
 
+    if 'build_type' not in settings_dict:
+        raise ValueError(
+            f"Error parsing file '{file_name}', in the second section, "
+            f"expected a 'build_type' key")
+    build_type = settings_dict['build_type']
+    if not isinstance(build_type, str):
+        raise ValueError(
+            f"Error parsing file '{file_name}', in the second section, value 'build_type', "
+            f"expected a string, "
+            f"got a '{type(build_type)}' instead")
+    if build_type not in ['ament_cmake', 'ament_python', 'cmake', 'mixed']:
+        raise ValueError(
+            f"Error parsing file '{file_name}', in the second section, value 'build_type', "
+            f"expected a build type in ['ament_cmake', 'ament_python', 'cmake', 'mixed'], "
+            f"got '{build_type}' instead")
+    build_context.add_build_type(build_type=build_type)
+
     if 'builders' not in config:
         raise ValueError(
             f"Error parsing file '{file_name}', in the second section, "
