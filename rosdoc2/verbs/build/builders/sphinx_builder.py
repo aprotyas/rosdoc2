@@ -65,7 +65,7 @@ if rosdoc2_settings.get('enable_intersphinx', True):
     print('[rosdoc2] enabling intersphinx', file=sys.stderr)
     extensions.append('sphinx.ext.intersphinx')
 
-if '{build_type}' != 'ament_python':
+if '{build_type}' != 'ament_python' or {run_doxygen}:
     if rosdoc2_settings.get('enable_breathe', True):
         # Configure Breathe.
         # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
@@ -331,7 +331,9 @@ class SphinxBuilder(Builder):
 
     def build(self, *, doc_build_folder, output_staging_directory):
         # Check that doxygen_xml_directory exists relative to output staging, if specified.
-        if self.doxygen_xml_directory is not None and self.build_context.build_type != 'ament_python':
+        if (self.doxygen_xml_directory is not None and
+                (self.build_context.build_type != 'ament_python' or
+                 self.build_context.run_doxygen)):
             self.doxygen_xml_directory = \
                 os.path.join(output_staging_directory, self.doxygen_xml_directory)
             self.doxygen_xml_directory = os.path.abspath(self.doxygen_xml_directory)
@@ -383,12 +385,13 @@ class SphinxBuilder(Builder):
             sourcedir,
             intersphinx_mapping_extensions)
 
-        # If the package has build type `ament_python`/`mixed`, then
-        # invoke `sphinx-apidoc` before building
-        if self.build_context.build_type in ['ament_python', 'mixed']:
+        # If the package has build type `ament_python`, or if the user configured
+        # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
+        if (self.build_context.build_type == 'ament_python' or
+                self.build_context.run_sphinx_apidoc):
             package_xml_directory = os.path.dirname(self.build_context.package.filename)
             package_list = setuptools.find_packages(where=package_xml_directory)
-            if package_list is not None:
+            if package_list:
                 package_src_directory = os.path.join(package_xml_directory, package_list[0])
             elif self.build_context.python_source is not None:
                 package_src_directory = \
@@ -398,8 +401,8 @@ class SphinxBuilder(Builder):
             else:
                 msg = \
                 'Could not locate source directory to invoke sphinx-apidoc in. ' \
-                'If this is a `mixed` build_type, please specify the Python source ' \
-                'in `rosdoc2.yaml`.'
+                'If this is package does not have a standard Python package layout, '\
+                'please specify the Python source in `rosdoc2.yaml`.'
                 raise RuntimeError(msg)
             cmd = [
                 'sphinx-apidoc',
@@ -524,6 +527,7 @@ class SphinxBuilder(Builder):
         template_variables = {
             'package_name': package.name,
             'build_type': self.build_context.build_type,
+            'run_doxygen': self.build_context.run_doxygen,
             'user_sourcedir': os.path.abspath(user_sourcedir),
             'user_conf_py_filename': os.path.abspath(os.path.join(user_sourcedir, 'conf.py')),
             'breathe_projects': ',\n'.join(breathe_projects) + '\n    ',

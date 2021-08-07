@@ -45,11 +45,11 @@ settings:
     ## If this is not specified explicitly, it defaults to 'true'.
     generate_package_index: true
 
-    ## This setting is relevant mostly if the 'build_type' is mixed, and the standard
-    ## Python package layout cannot be assumed for 'sphinx-apidoc' invocation. The user
-    ## can provide the path (relative to the 'package.xml' file) where the Python modules
-    ## defined by this package are located.
-    python_source: {package_name}
+    ## This setting is relevant mostly if the standard Python package layout cannot
+    ## be assumed for 'sphinx-apidoc' invocation. The user can provide the path
+    ## (relative to the 'package.xml' file) where the Python modules defined by this
+    ## package are located.
+    python_source: '{package_name}'
 
     ## This setting, if true, attempts to run `doxygen` and the `breathe`/`exhale`
     ## extensions to `sphinx` regardless of build type. This is most useful if the
