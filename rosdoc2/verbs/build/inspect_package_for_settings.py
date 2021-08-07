@@ -45,23 +45,6 @@ settings:
     ## If this is not specified explicitly, it defaults to 'true'.
     generate_package_index: true
 
-    ## The package build type is the 'build_type' tag exported by that package's
-    ## manifest, and it could be 'ament_cmake', 'ament_python', or 'cmake'. The
-    ## user could alternatively set this to 'mixed' to render documentation using
-    ## both 'doxygen'/'breathe'/'exhale' (C/C++ package) and 'sphinx-apidoc' (Python
-    ## package.
-
-    ## Behaviors:
-    ## - 'ament_cmake': Runs 'doxygen_builder' and 'sphinx_builder'. The 'breathe' and
-    ##   'exhale' extension to 'sphinx' are also invoked.
-    ##   'ament_python': The 'doxygen_builder' is not invoked, and neither are the
-    ##   'breathe'/'exhale' extensions to 'sphinx'. Rather, the 'sphinx-apidoc' tool
-    ##   is invoked to generate '.rst' files for python modules.
-    ## - 'cmake': See 'ament_cmake'.
-    ## - 'mixed': Both the 'sphinx-apidoc' and the 'doxygen'/'breathe'/'exhale' tools
-    ##   are run, this build type requires a separate 'python_source' setting.
-    build_type: {package_build_type}
-
     ## This setting is relevant mostly if the 'build_type' is mixed, and the standard
     ## Python package layout cannot be assumed for 'sphinx-apidoc' invocation. The user
     ## can provide the path (relative to the 'package.xml' file) where the Python modules

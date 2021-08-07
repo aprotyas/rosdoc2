@@ -24,9 +24,7 @@ class BuildContext:
         self.configuration_file_path = configuration_file_path
         self.package = package_object
         self.tool_options = tool_options
-
-    def add_build_type(self, *, build_type):
-        self.build_type = build_type
+        self.build_type = package_object.get_build_type()
 
     def add_python_source(self, *, python_source):
         self.python_source = python_source
