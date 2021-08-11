@@ -393,15 +393,23 @@ class SphinxBuilder(Builder):
         if (self.build_context.build_type == 'ament_python' or
                 self.build_context.run_sphinx_apidoc):
             package_xml_directory = os.path.dirname(self.build_context.package.filename)
-            package_list = setuptools.find_packages(where=package_xml_directory)
-            if package_list:
-                package_src_directory = os.path.join(package_xml_directory, package_list[0])
-            elif self.build_context.python_source is not None:
+            # If 'python_source' is specified, construct 'package_src_directory' from it
+            if self.build_context.python_source is not None:
                 package_src_directory = \
                     os.path.join(
                         package_xml_directory,
                         self.build_context.python_source)
+            # If not provided, try to find the package source direcotry
             else:
+                package_list = setuptools.find_packages(where=package_xml_directory)
+                try:
+                    package_src_directory = \
+                        os.path.join(
+                            package_xml_directory,
+                            package_list[package_list.index(self.build_context.package.name)]
+                except ValueError:
+                    package_src_directory = ''
+            if not package_src_directory:
                 msg = \
                 'Could not locate source directory to invoke sphinx-apidoc in. ' \
                 'If this is package does not have a standard Python package layout, '\
