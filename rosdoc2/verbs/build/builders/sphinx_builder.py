@@ -410,11 +410,9 @@ class SphinxBuilder(Builder):
                 except ValueError:
                     package_src_directory = ''
             if not package_src_directory:
-                msg = \
-                'Could not locate source directory to invoke sphinx-apidoc in. ' \
-                'If this is package does not have a standard Python package layout, '\
-                'please specify the Python source in `rosdoc2.yaml`.'
-                raise RuntimeError(msg)
+                raise RuntimeError('Could not locate source directory to invoke sphinx-apidoc in. '
+                                   'If this is package does not have a standard Python package layout, '
+                                   'please specify the Python source in `rosdoc2.yaml`.')
             cmd = [
                 'sphinx-apidoc',
                 '-o', os.path.relpath(sourcedir, start=doc_build_folder),
