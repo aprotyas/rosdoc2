@@ -29,8 +29,8 @@ class BuildContext:
     def add_python_source(self, *, python_source):
         self.python_source = python_source
 
-    def add_run_doxygen(self, *, run_doxygen):
-        self.run_doxygen = run_doxygen
+    def add_always_run_doxygen(self, *, always_run_doxygen):
+        self.always_run_doxygen = always_run_doxygen
 
     def add_run_sphinx_apidoc(self, *, run_sphinx_apidoc):
         self.run_sphinx_apidoc = run_sphinx_apidoc

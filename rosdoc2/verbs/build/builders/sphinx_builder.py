@@ -27,7 +27,7 @@ logger = logging.getLogger('rosdoc2')
 
 def generate_package_toc_entry(*, build_context) -> str:
     build_type = build_context.build_type
-    run_doxygen = build_context.run_doxygen
+    always_run_doxygen = build_context.always_run_doxygen
     run_sphinx_apidoc = build_context.run_sphinx_apidoc
     toc_entry_py = f'\n   {build_context.package.name} Python API <modules>'
     toc_entry_cpp = '\n   api/library_root\n   Full C/C++ API <api/unabridged_api>\n   File structure <api/unabridged_orphan>'
@@ -35,7 +35,7 @@ def generate_package_toc_entry(*, build_context) -> str:
 
     if build_type == 'ament_python' or run_sphinx_apidoc:
         toc_entry += toc_entry_py
-    if build_type in ['ament_cmake', 'cmake'] or run_doxygen:
+    if build_type in ['ament_cmake', 'cmake'] or always_run_doxygen:
         toc_entry += toc_entry_cpp
 
     return toc_entry
@@ -535,7 +535,7 @@ class SphinxBuilder(Builder):
         template_variables = {
             'package_name': package.name,
             'build_type': self.build_context.build_type,
-            'run_doxygen': self.build_context.run_doxygen,
+            'always_run_doxygen': self.build_context.always_run_doxygen,
             'user_sourcedir': os.path.abspath(user_sourcedir),
             'user_conf_py_filename': os.path.abspath(os.path.join(user_sourcedir, 'conf.py')),
             'breathe_projects': ',\n'.join(breathe_projects) + '\n    ',

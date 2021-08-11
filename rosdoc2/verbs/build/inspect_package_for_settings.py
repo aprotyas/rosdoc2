@@ -55,7 +55,7 @@ settings:
     ## extensions to `sphinx` regardless of build type. This is most useful if the
     ## user would like to generate C/C++ API documentation for a package that is not
     ## of the `ament_cmake/cmake` build type.
-    run_doxygen: false
+    always_run_doxygen: false
 
     ## This setting, if true, attempts to run `sphinx-apidoc` regardless of build
     ## type. This is most useful if the user would like to generate Python API
