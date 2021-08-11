@@ -64,8 +64,9 @@ def parse_rosdoc2_yaml(yaml_string, build_context):
         build_context.add_always_run_doxygen(
             always_run_doxygen=settings_dict['always_run_doxygen'])
 
-    if 'run_sphinx_apidoc' in settings_dict:
-        build_context.add_run_sphinx_apidoc(run_sphinx_apidoc=settings_dict['run_sphinx_apidoc'])
+    if 'always_run_sphinx_apidoc' in settings_dict:
+        build_context.add_always_run_sphinx_apidoc(
+            always_run_sphinx_apidoc=settings_dict['always_run_sphinx_apidoc'])
 
     if 'builders' not in config:
         raise ValueError(

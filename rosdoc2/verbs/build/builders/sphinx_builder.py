@@ -28,12 +28,12 @@ logger = logging.getLogger('rosdoc2')
 def generate_package_toc_entry(*, build_context) -> str:
     build_type = build_context.build_type
     always_run_doxygen = build_context.always_run_doxygen
-    run_sphinx_apidoc = build_context.run_sphinx_apidoc
+    always_run_sphinx_apidoc = build_context.always_run_sphinx_apidoc
     toc_entry_py = f'\n   {build_context.package.name} Python API <modules>'
     toc_entry_cpp = '\n   api/library_root\n   Full C/C++ API <api/unabridged_api>\n   File structure <api/unabridged_orphan>'
     toc_entry = ''
 
-    if build_type == 'ament_python' or run_sphinx_apidoc:
+    if build_type == 'ament_python' or always_run_sphinx_apidoc:
         toc_entry += toc_entry_py
     if build_type in ['ament_cmake', 'cmake'] or always_run_doxygen:
         toc_entry += toc_entry_cpp
@@ -391,7 +391,7 @@ class SphinxBuilder(Builder):
         # If the package has build type `ament_python`, or if the user configured
         # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
         if (self.build_context.build_type == 'ament_python' or
-                self.build_context.run_sphinx_apidoc):
+                self.build_context.always_run_sphinx_apidoc):
             package_xml_directory = os.path.dirname(self.build_context.package.filename)
             # If 'python_source' is specified, construct 'package_src_directory' from it
             if self.build_context.python_source is not None:

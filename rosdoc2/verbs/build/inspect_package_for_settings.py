@@ -60,7 +60,7 @@ settings:
     ## This setting, if true, attempts to run `sphinx-apidoc` regardless of build
     ## type. This is most useful if the user would like to generate Python API
     ## documentation for a package that is not of the `ament_python` build type.
-    run_sphinx_apidoc: false
+    always_run_sphinx_apidoc: false
 builders:
     ## Each stanza represents a separate build step, performed by a specific 'builder'.
     ## The key of each stanza is the builder to use; this must be one of the
