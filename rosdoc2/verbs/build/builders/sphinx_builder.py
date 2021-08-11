@@ -69,7 +69,7 @@ if rosdoc2_settings.get('enable_intersphinx', True):
     print('[rosdoc2] enabling intersphinx', file=sys.stderr)
     extensions.append('sphinx.ext.intersphinx')
 
-if '{build_type}' != 'ament_python' or {run_doxygen}:
+if '{build_type}' in ('ament_cmake', 'cmake') or {run_doxygen}:
     if rosdoc2_settings.get('enable_breathe', True):
         # Configure Breathe.
         # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
@@ -335,7 +335,7 @@ class SphinxBuilder(Builder):
     def build(self, *, doc_build_folder, output_staging_directory):
         # Check that doxygen_xml_directory exists relative to output staging, if specified.
         if (self.doxygen_xml_directory is not None and
-                (self.build_context.build_type != 'ament_python' or
+                (self.build_context.build_type in ('ament_cmake', 'cmake') or
                  self.build_context.run_doxygen)):
             self.doxygen_xml_directory = \
                 os.path.join(output_staging_directory, self.doxygen_xml_directory)
