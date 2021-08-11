@@ -80,7 +80,7 @@ class DoxygenBuilder(Builder):
         # If the build type is not `ament_cmake/cmake`, there is no reason
         # to create a doxygen builder.
         if (self.build_context.build_type not in ('ament_cmake', 'cmake') and
-                not self.build_context.run_doxygen):
+                not self.build_context.always_run_doxygen):
             logger.info(
                 f"The package build type is not 'ament_cmake' or 'cmake', hence the"
                 f"'{self.builder_type}' builder was not configured")
@@ -160,7 +160,7 @@ class DoxygenBuilder(Builder):
     def build(self, *, doc_build_folder, output_staging_directory):
         # If the build type is not 'ament_cmake/cmake', there is no reason to run doxygen.
         if (self.build_context.build_type not in ('ament_cmake', 'cmake') and
-                not self.build_context.run_doxygen):
+                not self.build_context.always_run_doxygen):
             logger.info(
                 f"The package build type is not 'ament_cmake' or 'cmake', hence the"
                 f"'{self.builder_type}' builder was not invoked")
