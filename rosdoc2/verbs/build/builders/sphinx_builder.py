@@ -406,7 +406,7 @@ class SphinxBuilder(Builder):
                     package_src_directory = \
                         os.path.join(
                             package_xml_directory,
-                            package_list[package_list.index(self.build_context.package.name)]
+                            package_list[package_list.index(self.build_context.package.name)])
                 except ValueError:
                     package_src_directory = ''
             if not package_src_directory:
