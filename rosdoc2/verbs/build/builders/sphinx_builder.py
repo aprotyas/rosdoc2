@@ -395,8 +395,10 @@ class SphinxBuilder(Builder):
 
         # If the package has build type `ament_python`, or if the user configured
         # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
-        if (self.build_context.build_type == 'ament_python' or
-                self.build_context.always_run_sphinx_apidoc):
+        if (
+            self.build_context.build_type == 'ament_python' or
+                self.build_context.always_run_sphinx_apidoc
+        ):
             package_xml_directory = os.path.dirname(self.build_context.package.filename)
             # If 'python_source' is specified, construct 'package_src_directory' from it
             if self.build_context.python_source is not None:
