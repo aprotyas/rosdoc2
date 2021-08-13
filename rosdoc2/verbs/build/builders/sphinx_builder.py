@@ -137,8 +137,6 @@ if rosdoc2_settings.get('support_markdown', True):
     print(f"[rosdoc2] adding markdown parser", file=sys.stderr)
     # The `myst_parser` is used specifically if there are markdown files
     # in the sphinx project
-    # TODO(aprotyas): Migrate files under the `include` tag in the project's Doxygen
-    # configuration into the Sphinx project tree used to run the Sphinx builder in.
     extensions.append('myst_parser')
 """
 
