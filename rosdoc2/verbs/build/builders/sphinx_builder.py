@@ -336,9 +336,10 @@ class SphinxBuilder(Builder):
 
     def build(self, *, doc_build_folder, output_staging_directory):
         # Check that doxygen_xml_directory exists relative to output staging, if specified.
-        if (self.doxygen_xml_directory is not None and
-                (self.build_context.build_type in ('ament_cmake', 'cmake') or
-                 self.build_context.always_run_doxygen)):
+        should_run_doxygen = \
+            self.build_context.build_type in ('ament_cmake', 'cmake') or \
+            self.build_context.always_run_doxygen
+        if self.doxygen_xml_directory is not None and should_run_doxygen:
             self.doxygen_xml_directory = \
                 os.path.join(output_staging_directory, self.doxygen_xml_directory)
             self.doxygen_xml_directory = os.path.abspath(self.doxygen_xml_directory)
