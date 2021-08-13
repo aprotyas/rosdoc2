@@ -71,7 +71,9 @@ if rosdoc2_settings.get('enable_intersphinx', True):
     print('[rosdoc2] enabling intersphinx', file=sys.stderr)
     extensions.append('sphinx.ext.intersphinx')
 
-if '{build_type}' in ('ament_cmake', 'cmake') or {always_run_doxygen}:
+build_type = '{build_type}'
+always_run_doxygen = {always_run_doxygen}
+if build_type in ('ament_cmake', 'cmake') or always_run_doxygen:
     if rosdoc2_settings.get('enable_breathe', True):
         # Configure Breathe.
         # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
