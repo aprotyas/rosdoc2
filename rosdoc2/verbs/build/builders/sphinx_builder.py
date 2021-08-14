@@ -18,6 +18,7 @@ import os
 import setuptools
 import shutil
 import subprocess
+import sys
 
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
@@ -48,6 +49,7 @@ rosdoc2_wrapping_conf_py_template = """\
 ## conf.py, extends the settings to support Breathe and Exhale and to set up
 ## intersphinx mappings correctly, among other things.
 
+import os
 import sys
 
 ## exec the user's conf.py to bring all of their settings into this file.
@@ -69,6 +71,8 @@ if rosdoc2_settings.get('enable_autodoc', True):
     # Provide all runtime dependencies to be mocked up
     # Note: `autodoc` only mocks up those modules that it actually cannot locate in PATH
     autodoc_mock_imports = {exec_depends}
+    # Add the package directory to PATH, so that `sphinx-autodoc` can import it
+    sys.path.insert(0, os.path.dirname('{package_src_directory}'))
 
 if rosdoc2_settings.get('enable_intersphinx', True):
     print('[rosdoc2] enabling intersphinx', file=sys.stderr)
@@ -388,12 +392,6 @@ class SphinxBuilder(Builder):
             if package_name != self.build_context.package.name
         ]
 
-        # Setup rosdoc2 Sphinx file which will include and extend the one in `sourcedir`.
-        self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
-            doc_build_folder,
-            sourcedir,
-            intersphinx_mapping_extensions)
-
         # If the package has build type `ament_python`, or if the user configured
         # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
         if (
@@ -425,7 +423,6 @@ class SphinxBuilder(Builder):
                 'sphinx-apidoc',
                 '-o', os.path.relpath(sourcedir, start=doc_build_folder),
                 '-e',  # Document each module in its own page.
-                '-a',  # Append module path into `sys.path`.
                 os.path.abspath(package_src_directory),
             ]
             logger.info(
@@ -437,6 +434,13 @@ class SphinxBuilder(Builder):
                 logger.info(msg)
             else:
                 raise RuntimeError(msg)
+
+        # Setup rosdoc2 Sphinx file which will include and extend the one in `sourcedir`.
+        self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
+            doc_build_folder,
+            sourcedir,
+            package_src_directory,
+            intersphinx_mapping_extensions)
 
         # Invoke Sphinx-build.
         working_directory = doc_build_folder
@@ -531,6 +535,7 @@ class SphinxBuilder(Builder):
         self,
         directory,
         user_sourcedir,
+        package_src_directory,
         intersphinx_mapping_extensions,
     ):
         os.makedirs(directory, exist_ok=True)
@@ -542,6 +547,7 @@ class SphinxBuilder(Builder):
                 f'        "{package.name} Doxygen Project": "{self.doxygen_xml_directory}"')
         template_variables = {
             'package_name': package.name,
+            'package_src_directory': package_src_directory,
             'exec_depends': [exec_depend.name for exec_depend in package.exec_depends],
             'build_type': self.build_context.build_type,
             'always_run_doxygen': self.build_context.always_run_doxygen,
