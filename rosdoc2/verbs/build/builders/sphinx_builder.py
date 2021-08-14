@@ -66,6 +66,9 @@ ensure_global('extensions', [])
 if rosdoc2_settings.get('enable_autodoc', True):
     print('[rosdoc2] enabling autodoc', file=sys.stderr)
     extensions.append('sphinx.ext.autodoc')
+    # Provide all runtime dependencies to be mocked up
+    # Note: `autodoc` only mocks up those modules that it actually cannot locate in PATH
+    autodoc_mock_imports = {exec_depends}
 
 if rosdoc2_settings.get('enable_intersphinx', True):
     print('[rosdoc2] enabling intersphinx', file=sys.stderr)
@@ -539,6 +542,7 @@ class SphinxBuilder(Builder):
                 f'        "{package.name} Doxygen Project": "{self.doxygen_xml_directory}"')
         template_variables = {
             'package_name': package.name,
+            'exec_depends': [exec_depend.name for exec_depend in package.exec_depends],
             'build_type': self.build_context.build_type,
             'always_run_doxygen': self.build_context.always_run_doxygen,
             'user_sourcedir': os.path.abspath(user_sourcedir),
