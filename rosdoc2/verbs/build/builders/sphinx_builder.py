@@ -80,50 +80,63 @@ if rosdoc2_settings.get('enable_intersphinx', True):
 
 build_type = '{build_type}'
 always_run_doxygen = {always_run_doxygen}
-if build_type in ('ament_cmake', 'cmake') or always_run_doxygen:
-    if rosdoc2_settings.get('enable_breathe', True):
-        # Configure Breathe.
-        # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
-        print('[rosdoc2] enabling breathe', file=sys.stderr)
-        ensure_global('breathe_projects', {{}})
-        breathe_projects.update({{
-    {breathe_projects}}})
-        if breathe_projects:
-            # Enable Breathe and arbitrarily select the first project.
-            extensions.append('breathe')
-            breathe_default_project = next(iter(breathe_projects.keys()))
+# By default, the `exhale`/`breathe` extensions should be added if `doxygen` was invoked
+is_doxygen_invoked = build_type in ('ament_cmake', 'cmake') or always_run_doxygen
 
-    if rosdoc2_settings.get('enable_exhale', True):
-        # Configure Exhale.
-        # Exhale uses the output of Doxygen and Breathe to create easier to browse pages
-        # for classes and functions documented with Doxygen.
-        # This is similar to the class hierarchies and namespace listing provided by
-        # Doxygen out of the box.
-        print('[rosdoc2] enabling exhale', file=sys.stderr)
-        extensions.append('exhale')
-        ensure_global('exhale_args', {{}})
+if rosdoc2_settings.get('enable_breathe', is_doxygen_invoked):
+    # Configure Breathe.
+    # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
+    print('[rosdoc2] enabling breathe', file=sys.stderr)
+    # First check that doxygen would have been run
+    if not is_doxygen_invoked:
+        raise RuntimeError(
+            "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
+            "Please enable 'always_run_doxygen' if the package is not an"
+            "'ament_cmake' or 'cmake' package.")
+    ensure_global('breathe_projects', {{}})
+    breathe_projects.update({{{breathe_projects}}})
+    if breathe_projects:
+        # Enable Breathe and arbitrarily select the first project.
+        extensions.append('breathe')
+        breathe_default_project = next(iter(breathe_projects.keys()))
 
-        from exhale import utils
-        exhale_args.update({{
-            # These arguments are required.
-            "containmentFolder": "{user_sourcedir}/api",
-            "rootFileName": "library_root.rst",
-            "rootFileTitle": "{package_name} C/C++ API",
-            "doxygenStripFromPath": "..",
-            # Suggested optional arguments.
-            "createTreeView": True,
-            # TIP: if using the sphinx-bootstrap-theme, you need
-            # "treeViewIsBootstrap": True,
-            "exhaleExecutesDoxygen": False,
-            # Maps markdown files to the "md" lexer, and not the "markdown" lexer
-            # Pygments registers "md" as a valid markdown lexer, and not "markdown"
-            "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
-            # This mapping will work when `exhale` supports `:doxygenpage:` directives
-            # Check https://github.com/svenevs/exhale/issues/111
-            # TODO(aprotyas): Uncomment the mapping below once the above issue is resolved.
-            # "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
-            #     lambda kind: [":project:", ":path:", ":content-only:"] if kind == "page" else []),
-        }})
+if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
+    # Configure Exhale.
+    # Exhale uses the output of Doxygen and Breathe to create easier to browse pages
+    # for classes and functions documented with Doxygen.
+    # This is similar to the class hierarchies and namespace listing provided by
+    # Doxygen out of the box.
+    print('[rosdoc2] enabling exhale', file=sys.stderr)
+    # First check that doxygen would have been run
+    if not is_doxygen_invoked:
+        raise RuntimeError(
+            "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
+            "Please enable 'always_run_doxygen' if the package is not an"
+            "'ament_cmake' or 'cmake' package.")
+    extensions.append('exhale')
+    ensure_global('exhale_args', {{}})
+
+    from exhale import utils
+    exhale_args.update({{
+        # These arguments are required.
+        "containmentFolder": "{user_sourcedir}/api",
+        "rootFileName": "library_root.rst",
+        "rootFileTitle": "{package_name} C/C++ API",
+        "doxygenStripFromPath": "..",
+        # Suggested optional arguments.
+        "createTreeView": True,
+        # TIP: if using the sphinx-bootstrap-theme, you need
+        # "treeViewIsBootstrap": True,
+        "exhaleExecutesDoxygen": False,
+        # Maps markdown files to the "md" lexer, and not the "markdown" lexer
+        # Pygments registers "md" as a valid markdown lexer, and not "markdown"
+        "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
+        # This mapping will work when `exhale` supports `:doxygenpage:` directives
+        # Check https://github.com/svenevs/exhale/issues/111
+        # TODO(aprotyas): Uncomment the mapping below once the above issue is resolved.
+        # "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
+        #     lambda kind: [":project:", ":path:", ":content-only:"] if kind == "page" else []),
+    }})
 
 if rosdoc2_settings.get('override_theme', True):
     extensions.append('sphinx_rtd_theme')
