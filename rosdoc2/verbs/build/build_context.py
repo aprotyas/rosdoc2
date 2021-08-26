@@ -28,12 +28,3 @@ class BuildContext:
         self.python_source = None
         self.always_run_doxygen = False
         self.always_run_sphinx_apidoc = False
-
-    def add_python_source(self, *, python_source):
-        self.python_source = python_source
-
-    def add_always_run_doxygen(self, *, always_run_doxygen):
-        self.always_run_doxygen = always_run_doxygen
-
-    def add_always_run_sphinx_apidoc(self, *, always_run_sphinx_apidoc):
-        self.always_run_sphinx_apidoc = always_run_sphinx_apidoc

@@ -57,16 +57,9 @@ def parse_rosdoc2_yaml(yaml_string, build_context):
             f"expected a dict{{output_dir: build_settings, ...}}, "
             f"got a '{type(builders_dict)}' instead")
 
-    if 'python_source' in settings_dict:
-        build_context.add_python_source(python_source=settings_dict['python_source'])
-
-    if 'always_run_doxygen' in settings_dict:
-        build_context.add_always_run_doxygen(
-            always_run_doxygen=settings_dict['always_run_doxygen'])
-
-    if 'always_run_sphinx_apidoc' in settings_dict:
-        build_context.add_always_run_sphinx_apidoc(
-            always_run_sphinx_apidoc=settings_dict['always_run_sphinx_apidoc'])
+    build_context.python_source = settings_dict.get('python_source', None)
+    build_context.always_run_doxygen = settings_dict.get('always_run_doxygen', False)
+    build_context.always_run_sphinx_apidoc = settings_dict.get('always_run_sphinx_apidoc', False)
 
     if 'builders' not in config:
         raise ValueError(
