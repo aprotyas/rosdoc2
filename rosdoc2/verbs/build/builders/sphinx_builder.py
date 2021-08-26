@@ -421,12 +421,11 @@ class SphinxBuilder(Builder):
             # If not provided, try to find the package source direcotry
             else:
                 package_list = setuptools.find_packages(where=package_xml_directory)
-                try:
-                    package_src_directory = \
-                        os.path.join(
-                            package_xml_directory,
-                            package_list[package_list.index(self.build_context.package.name)])
-                except ValueError:
+                if self.build_context.package.name in package_list:
+                    package_src_directory = os.path.join(
+                        package_xml_directory,
+                        self.build_context.package.name)
+                else:
                     package_src_directory = None
 
             if not package_src_directory or not os.path.isdir(package_src_directory):
