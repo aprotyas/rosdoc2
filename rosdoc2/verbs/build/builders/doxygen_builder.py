@@ -86,7 +86,7 @@ class DoxygenBuilder(Builder):
             logger.info(
                 f"The package build type is not 'ament_cmake' or 'cmake', hence the"
                 f"'{self.builder_type}' builder was not configured")
-            return None
+            return
 
         self.doxyfile = None
         self.extra_doxyfile_statements = []
