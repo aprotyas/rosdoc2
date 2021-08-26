@@ -30,10 +30,14 @@ def generate_package_toc_entry(*, build_context) -> str:
     build_type = build_context.build_type
     always_run_doxygen = build_context.always_run_doxygen
     always_run_sphinx_apidoc = build_context.always_run_sphinx_apidoc
-    toc_entry_py = f'\n   {build_context.package.name} Python API <modules>'
-    toc_entry_cpp = \
-        '\n   api/library_root\n   Full C/C++ API <api/unabridged_api> \
-        \n   File structure <api/unabridged_orphan>'
+    # The TOC entries have to be indented by three (or any N) spaces
+    # inside the string to fall under the `:toctree:` directive
+    toc_entry_py = f"""
+   {build_context.package.name} Python API <modules>"""
+    toc_entry_cpp = """
+   api/library_root
+   Full C/C++ API <api/unabridged_api>
+   File structure <api/unabridged_orphan>"""
     toc_entry = ''
 
     if build_type == 'ament_python' or always_run_sphinx_apidoc:
