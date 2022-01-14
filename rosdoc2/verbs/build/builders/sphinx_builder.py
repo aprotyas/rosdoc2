@@ -413,16 +413,19 @@ class SphinxBuilder(Builder):
         # If 'python_source' is specified, construct 'package_src_directory' from it
         if self.build_context.python_source is not None:
             package_src_directory = \
-                os.path.join(
-                    package_xml_directory,
-                    self.build_context.python_source)
+                os.path.abspath(
+                    os.path.join(
+                        package_xml_directory,
+                        self.build_context.python_source))
         # If not provided, try to find the package source direcotry
         else:
             package_list = setuptools.find_packages(where=package_xml_directory)
             if self.build_context.package.name in package_list:
-                package_src_directory = os.path.join(
-                    package_xml_directory,
-                    self.build_context.package.name)
+                package_src_directory = \
+                    os.path.abspath(
+                        os.path.join(
+                            package_xml_directory,
+                            self.build_context.package.name))
             else:
                 package_src_directory = None
 
@@ -430,7 +433,7 @@ class SphinxBuilder(Builder):
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder,
             sourcedir,
-            os.path.abspath(package_src_directory),
+            package_src_directory,
             intersphinx_mapping_extensions)
 
         # If the package has build type `ament_python`, or if the user configured
@@ -449,7 +452,7 @@ class SphinxBuilder(Builder):
                 'sphinx-apidoc',
                 '-o', os.path.relpath(sourcedir, start=doc_build_folder),
                 '-e',  # Document each module in its own page.
-                os.path.abspath(package_src_directory),
+                package_src_directory,
             ]
             logger.info(
                 f"Running sphinx-apidoc: '{' '.join(cmd)}' in '{doc_build_folder}'"
